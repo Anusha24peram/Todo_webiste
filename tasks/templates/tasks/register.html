@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | TaskFlow Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'tasks/styles.css' %}">
+</head>
+<body class="auth-body">
+    <div class="auth-shell">
+        <section class="auth-showcase">
+            <p class="eyebrow">Plan with confidence</p>
+            <h1>Create an account that keeps your work moving.</h1>
+            <p>TaskFlow Pro gives you a polished dashboard, smart filtering, and a cleaner way to manage deadlines.</p>
+        </section>
+
+        <section class="auth-card">
+            <p class="eyebrow">Get Started</p>
+            <h2>Create your account</h2>
+            <form method="post" class="stack-form">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <small class="error-text">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="primary-button auth-button">Register</button>
+            </form>
+            <p class="auth-link">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </section>
+    </div>
+</body>
+</html>

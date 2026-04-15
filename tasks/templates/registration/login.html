@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | TaskFlow Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'tasks/styles.css' %}">
+</head>
+<body class="auth-body">
+    <div class="auth-shell">
+        <section class="auth-showcase">
+            <p class="eyebrow">Professional task management</p>
+            <h1>Organize priorities, deadlines, and progress in one place.</h1>
+            <p>Sign in to a dashboard designed to make your todo project look sharper and feel easier to use.</p>
+        </section>
+
+        <section class="auth-card">
+            <p class="eyebrow">Welcome Back</p>
+            <h2>Login to continue</h2>
+
+            {% if form.errors %}
+                <div class="message error">Your username or password did not match. Please try again.</div>
+            {% endif %}
+
+            <form method="post" class="stack-form">
+                {% csrf_token %}
+                <div>
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter your username" required>
+                </div>
+                <div>
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="primary-button auth-button">Login</button>
+            </form>
+            <p class="auth-link">Need an account? <a href="{% url 'register' %}">Register</a></p>
+        </section>
+    </div>
+</body>
+</html>

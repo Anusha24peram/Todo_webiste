@@ -1,0 +1,18 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}Analytics | TaskFlow Pro{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="panel form-panel">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Analytics</p>
+                <h1>Dashboard metrics live on the home page now</h1>
+            </div>
+        </div>
+        <p class="hero-copy">Use the main dashboard to review completion rate, overdue tasks, and filtered task views in one place.</p>
+        <a href="{% url 'home' %}" class="primary-button">Back to dashboard</a>
+    </div>
+</section>
+{% endblock %}

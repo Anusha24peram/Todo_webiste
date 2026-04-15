@@ -1,0 +1,36 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}New Task | TaskFlow Pro{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="panel form-panel">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Task Creation</p>
+                <h1>Add a new task</h1>
+            </div>
+        </div>
+
+        <form method="post" class="stack-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <small class="error-text">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="inline-actions">
+                <button type="submit" class="primary-button">Create task</button>
+                <a href="{% url 'home' %}" class="secondary-button">Back to dashboard</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

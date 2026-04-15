@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TaskFlow Pro{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'tasks/styles.css' %}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="ambient ambient-one"></div>
+        <div class="ambient ambient-two"></div>
+
+        {% if request.user.is_authenticated %}
+            <header class="topbar">
+                <a class="brand" href="{% url 'home' %}">
+                    <span class="brand-mark">TF</span>
+                    <span>
+                        <strong>TaskFlow Pro</strong>
+                        <small>Smart personal planning</small>
+                    </span>
+                </a>
+
+                <nav class="topbar-nav">
+                    <a href="{% url 'home' %}">Dashboard</a>
+                    <a href="{% url 'add_task' %}">New Task</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="ghost-button">Logout</button>
+                    </form>
+                </nav>
+            </header>
+        {% endif %}
+
+        <main class="main-content {% block main_class %}{% endblock %}">
+            {% if messages %}
+                <div class="message-stack">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

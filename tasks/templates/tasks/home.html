@@ -1,0 +1,144 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}Dashboard | TaskFlow Pro{% endblock %}
+
+{% block content %}
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Focus with clarity</p>
+        <h1>Welcome back, {{ request.user.username }}.</h1>
+        <p class="hero-copy">Track your priorities, finish work on time, and keep every task in one clean dashboard.</p>
+    </div>
+    <div class="hero-metric">
+        <span>{{ stats.completion_rate }}%</span>
+        <small>Completion rate</small>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-card">
+        <span>Total Tasks</span>
+        <strong>{{ stats.total }}</strong>
+    </article>
+    <article class="stat-card">
+        <span>Completed</span>
+        <strong>{{ stats.completed }}</strong>
+    </article>
+    <article class="stat-card">
+        <span>Pending</span>
+        <strong>{{ stats.pending }}</strong>
+    </article>
+    <article class="stat-card warning">
+        <span>Overdue</span>
+        <strong>{{ stats.overdue }}</strong>
+    </article>
+</section>
+
+<section class="dashboard-grid">
+    <div class="panel panel-wide">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Task Overview</p>
+                <h2>Your planner</h2>
+            </div>
+        </div>
+
+        <form method="get" class="filters">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by title or description">
+            <select name="status">
+                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All statuses</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="overdue" {% if status_filter == 'overdue' %}selected{% endif %}>Overdue</option>
+            </select>
+            <select name="priority">
+                <option value="all" {% if priority_filter == 'all' %}selected{% endif %}>All priorities</option>
+                <option value="H" {% if priority_filter == 'H' %}selected{% endif %}>High</option>
+                <option value="M" {% if priority_filter == 'M' %}selected{% endif %}>Medium</option>
+                <option value="L" {% if priority_filter == 'L' %}selected{% endif %}>Low</option>
+            </select>
+            <select name="sort">
+                <option value="due_date" {% if sort == 'due_date' %}selected{% endif %}>Sort by due date</option>
+                <option value="priority" {% if sort == 'priority' %}selected{% endif %}>Sort by priority</option>
+                <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Sort by recent</option>
+                <option value="title" {% if sort == 'title' %}selected{% endif %}>Sort by title</option>
+            </select>
+            <button type="submit" class="primary-button">Apply</button>
+        </form>
+
+        <div class="task-list">
+            {% for task in tasks %}
+                <article class="task-item {% if task.completed %}completed{% endif %}">
+                    <div class="task-main">
+                        <div class="task-title-row">
+                            <h3>{{ task.title }}</h3>
+                            <span class="badge priority-{{ task.priority|lower }}">{{ task.priority_label }}</span>
+                            {% if task.is_overdue %}
+                                <span class="badge overdue">Overdue</span>
+                            {% elif task.completed %}
+                                <span class="badge complete">Done</span>
+                            {% endif %}
+                        </div>
+                        <p>{{ task.description|default:"No description added yet." }}</p>
+                        <div class="task-meta">
+                            <span>Created {{ task.created_at|date:"M d, Y" }}</span>
+                            <span>
+                                {% if task.due_date %}
+                                    Due {{ task.due_date|date:"M d, Y h:i A" }}
+                                {% else %}
+                                    No deadline
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="task-actions">
+                        <a class="secondary-button" href="{% url 'edit_task' task.id %}">Edit</a>
+                        <form method="post" action="{% url 'toggle_task' task.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="success-button">
+                                {% if task.completed %}Mark Active{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'delete_task' task.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="danger-button">Delete</button>
+                        </form>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-state">
+                    <h3>No tasks found</h3>
+                    <p>Create your first task or adjust the filters to see more results.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <aside class="panel">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Quick Add</p>
+                <h2>Create a task</h2>
+            </div>
+        </div>
+
+        <form method="post" action="{% url 'add_task' %}" class="stack-form">
+            {% csrf_token %}
+            {% for field in task_form %}
+                <div>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <small class="error-text">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="primary-button">Save task</button>
+        </form>
+    </aside>
+</section>
+{% endblock %}

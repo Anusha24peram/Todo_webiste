@@ -1,0 +1,18 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}Tasks | TaskFlow Pro{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="panel form-panel">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Tasks</p>
+                <h1>Your task list is available on the main dashboard</h1>
+            </div>
+        </div>
+        <p class="hero-copy">The project now uses a unified dashboard so task list, filters, stats, and quick actions stay together.</p>
+        <a href="{% url 'home' %}" class="primary-button">Open dashboard</a>
+    </div>
+</section>
+{% endblock %}
